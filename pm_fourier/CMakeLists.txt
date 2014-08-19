@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	std_msgs
 	geometry_msgs
+	lama_common
 	polygon_matcher
 )
 
@@ -91,6 +92,8 @@ catkin_package(
 ###########
 ## Build ##
 ###########
+
+list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations

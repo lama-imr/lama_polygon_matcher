@@ -2,13 +2,17 @@
 #define _PM_FOURIER_FOURIER_H_
 
 #include <vector>
-#include <pm_fourier/spoint.h>
 
-double getSimpleSimilarityFft(const std::vector<double> &fft1, const std::vector<double> &fft2, const int size);
+#include <lama_common/point.h>
 
-double getSimilarityNccFft(const std::vector<double> &fft1, const std::vector<double> &fft2, const int size);
+using std::vector;
+using lama::Point2;
 
-double getSimilarityFourier(const std::vector<SPoint> &polygon1, const std::vector<SPoint> &polygon2, const int fftSize);
+double getSimpleSimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size);
+
+double getSimilarityNccFft(const vector<double> &fft1, const vector<double> &fft2, const int size);
+
+double getSimilarityFourier(const vector<Point2> &polygon1, const vector<Point2> &polygon2, const int fftSize);
 
 #endif // _PM_FOURIER_FOURIER_H_
 

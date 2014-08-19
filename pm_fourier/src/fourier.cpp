@@ -1,5 +1,5 @@
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 #include <list>
 #include <numeric>
@@ -10,9 +10,10 @@
 #include <gsl/gsl_fft_complex.h>
 
 #include <pm_fourier/angle_shift.h>
-#include <pm_fourier/spoint.h>
+#include <lama_common/point.h>
 
-using namespace std;
+using std::vector;
+using lama::Point2;
 
 double getSimpleSimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size)
 {
@@ -50,9 +51,11 @@ double getSimpleSimilarityFft(const vector<double> &fft1, const vector<double> &
 }
 
 
-/** convert a polygon to a 'range' - convert the points to polar coordinates and just ignore the phase part :-)
+/** convert a polygon to a 'range' similar to LaserScan.ranges
+ *
+ * Convert the points to polar coordinates and just ignore the phase part.
 */
-static vector<double> convertPolygonToRange(const vector<SPoint> &polygon)
+static vector<double> convertPolygonToRange(const vector<Point2> &polygon)
 {
   vector<double> r;
   r.reserve(polygon.size());
@@ -73,18 +76,18 @@ static vector<double> convertPolygonToRange(const vector<SPoint> &polygon)
   {
     const double dx = sx - polygon[i].x;
     const double dy = sy - polygon[i].y;
-    const double d = sqrt(dx * dx + dy * dy);
+    const double d = std::sqrt(dx * dx + dy * dy);
     r.push_back(d);
   }
   return r;
 }
 
 
-double getSimilarityFourier(const vector<SPoint> &polygon1, const vector<SPoint> &polygon2, const int fftSize)
+double getSimilarityFourier(const vector<Point2> &polygon1, const vector<Point2> &polygon2, const int fftSize)
 {
   if (fftSize <= 0)
   {
-    cerr << "fftSize must be >0 !\n";
+	  std::cerr << "fftSize must be >0 !\n";
   }
 
   vector<double> range1(convertPolygonToRange(polygon1));
@@ -92,7 +95,8 @@ double getSimilarityFourier(const vector<SPoint> &polygon1, const vector<SPoint>
 
   vector<double> f1(fft2(range1));
   vector<double> f2(fft2(range2));
-  vector<double> a1,a2;
+  vector<double> a1;
+  vector<double> a2;
 
   a1.reserve(f1.size());
   a2.reserve(f1.size());
@@ -217,6 +221,4 @@ double getSimilarityNccFft(const vector<double> &fft1, const vector<double> &fft
 
   return r;
 }
-
-
 
