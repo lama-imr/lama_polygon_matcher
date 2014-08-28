@@ -91,9 +91,9 @@ bool evolve(geometry_msgs::Polygon& input, polygon_list& output, unsigned int ma
   return true;
 }
 
-/* Compute the concavexity of scaled polygons.
+/* Compute the convexity of scaled polygons.
  *
- * Compute the convecity of scaled polygons by looking at the signed distance
+ * Compute the convexity of scaled polygons by looking at the signed distance
  * between a point at scale s and the same point at scale (s - 1).
  * This approximates the curvature.
  *
@@ -281,19 +281,19 @@ int main(int argc, char **argv)
 {
   int max_thread;
   ros::init(argc, argv, "mcc_polygon_similarity_server");
-  ros::NodeHandle n;
+  ros::NodeHandle n("~");
 
   n.param<int>("max_thread", max_thread, 1);
 
   ros::ServiceServer service = n.advertiseService(ros::this_node::getName(), similarity);
-  ros::Publisher pub = n.advertise<std_msgs::String> ("node_register", 10, true);
+  ros::Publisher pub = n.advertise<std_msgs::String>("node_register", 10, true);
 
   ROS_INFO("Ready to work (with %i threads)", max_thread);
   std_msgs::String msg;
   msg.data = ros::this_node::getName();
   pub.publish(msg);
 
-  ros::MultiThreadedSpinner spinner(max_thread); // Use 4 threads
+  ros::MultiThreadedSpinner spinner(max_thread);
   spinner.spin();
 
   return 0;
