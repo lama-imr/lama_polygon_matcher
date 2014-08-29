@@ -1,5 +1,5 @@
 geometry_msgs/Polygon polygon1
 geometry_msgs/Polygon polygon2
 ---
-float64 rawSimilarity
-duration processingTime
+float64 raw_similarity
+duration processing_time

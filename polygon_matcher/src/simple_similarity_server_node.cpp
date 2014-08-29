@@ -14,9 +14,9 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request  &req,
       diff += req.polygon1.points[i].x - req.polygon2.points[j].x;
     }
   }
-  res.rawSimilarity = diff / (req.polygon1.points.size() + req.polygon2.points.size());
-  res.processingTime = ros::Time::now() - start;
-  ROS_DEBUG("sending back response in %f s", res.processingTime.toSec());
+  res.raw_similarity = diff / (req.polygon1.points.size() + req.polygon2.points.size());
+  res.processing_time = ros::Time::now() - start;
+  ROS_DEBUG("sending back response in %f s", res.processing_time.toSec());
 
   return true;
 }

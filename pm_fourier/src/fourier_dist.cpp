@@ -1,13 +1,4 @@
-#include <geometry_msgs/Polygon.h>
-#include <geometry_msgs/Point32.h>
-
-#include <lama_common/point.h>
-#include <lama_common/polygon.h>
 #include <pm_fourier/fourier_dist.h>
-#include <pm_fourier/fourier.h>
-
-using std::vector;
-using lama::Point2;
 
 FourierDistance::FourierDistance(ros::NodeHandle &node) :
 node(node)
@@ -37,9 +28,9 @@ bool FourierDistance::similarity(polygon_matcher::PolygonSimilarity::Request& re
   vector<Point2> rpol2(resamplePolygon(pts2, numOfSamples, delta2));
 
   const int fftSize = 30; // number of harmonics
-  res.rawSimilarity = getSimilarityFourier(rpol1, rpol2, fftSize);
-  res.processingTime = ros::Time::now() - start;
-  ROS_DEBUG("sending back response in %f s", res.processingTime.toSec());
+  res.raw_similarity = getSimilarityFourier(rpol1, rpol2, fftSize);
+  res.processing_time = ros::Time::now() - start;
+  ROS_DEBUG("sending back response in %f s", res.processing_time.toSec());
 
   return true;
 }

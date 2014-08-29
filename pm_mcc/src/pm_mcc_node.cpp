@@ -265,8 +265,8 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   evolve(polygon2res, polygon2evo, g_max_sigma);
   //create multiscale representation 
 
-  res.processingTime = ros::Time::now() - start;
-  ROS_DEBUG("Multi-polygon representation created after %.1f s", res.processingTime.toSec());
+  res.processing_time = ros::Time::now() - start;
+  ROS_DEBUG("Multi-polygon representation created after %.1f s", res.processing_time.toSec());
   matrix mcc1(g_num_samples, g_max_sigma);
   matrix mcc2(g_num_samples, g_max_sigma);
 
@@ -276,13 +276,13 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   ROS_DEBUG("Complexity normalization of polygon 1 = %f", C1);
   ROS_DEBUG("Complexity normalization of polygon 2 = %f", C2);
 
-  res.processingTime = ros::Time::now() - start;
-  ROS_DEBUG("Multi-scale representation created after %.1f s", res.processingTime.toSec());
+  res.processing_time = ros::Time::now() - start;
+  ROS_DEBUG("Multi-scale representation created after %.1f s", res.processing_time.toSec());
 
   matrix comp = compare(mcc1, mcc2);
 
-  res.processingTime = ros::Time::now() - start;
-  ROS_DEBUG("Comparison created after %.1f s", res.processingTime.toSec());
+  res.processing_time = ros::Time::now() - start;
+  ROS_DEBUG("Comparison created after %.1f s", res.processing_time.toSec());
 
   std::vector<double> result;
   result.reserve(comp.size2());
@@ -290,10 +290,10 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   {
     result.push_back(minDistance(comp, i));
   }
-  res.rawSimilarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (g_num_samples));
+  res.raw_similarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (g_num_samples));
 
-  res.processingTime = ros::Time::now() - start;
-  ROS_DEBUG("Sending back response: %f  (in %.1f s)", res.rawSimilarity, res.processingTime.toSec());
+  res.processing_time = ros::Time::now() - start;
+  ROS_DEBUG("Sending back response: %f  (in %.1f s)", res.raw_similarity, res.processing_time.toSec());
 
   return true;
 }
