@@ -33,11 +33,13 @@
 #include <polygon_matcher/PolygonSimilarity.h>
 
 // Number of points to keep for the mcc computation.
-unsigned int g_num_samples = 100;
+unsigned int g_num_samples;
 
 // Number of scales to compute.
 // TODO: talk with Karel: according to article, 10 should be sufficient.
-unsigned int g_max_sigma = 20;
+unsigned int g_max_sigma;
+
+bool g_rotation_invariance;
 
 using std::sqrt;
 using std::abs;
@@ -105,7 +107,7 @@ bool evolve(geometry_msgs::Polygon& input, polygon_list& output, unsigned int ma
  */
 double compute_convexity(const polygon_list& polygons, matrix& m)
 {
-  double complexity;
+  double complexity = 0;
 
   for (unsigned int s = 1; s < g_max_sigma; s++)
   {
@@ -141,9 +143,11 @@ double compute_convexity(const polygon_list& polygons, matrix& m)
 
 /* Compute the distance between two MCC representations
  *
- * Compute the distance between two MCC representations. In order to achieve
- * rotational invariance, a circular shift is applied on the rows of the second
- * matrix.
+ * Compute the distance between two MCC representations, i.e. for each contour
+ * point of a and b (rows) sum the absolute difference on all scale levels
+ * (columns).
+ * In order to achieve the optional rotational invariance, a circular shift is
+ * applied on the rows of the second matrix.
  */
 matrix compare(matrix& a, matrix& b)
 {
@@ -151,15 +155,25 @@ matrix compare(matrix& a, matrix& b)
 
   matrix ret(a.size1(), b.size1());
 
+  size_t last_row_shift = 1;
+  if (g_rotation_invariance)
+  {
+    last_row_shift = b.size1();
+  }
+
   for (size_t i = 0; i < a.size1(); i++)
   {
-    for (size_t j = 0; j < b.size1(); j++)
+    for (size_t j = 0; j < last_row_shift; j++)
     {
       double sum = 0;
+      // TODO: Discuss with Karel why not s from 0 to a.size2()
+      // First and last scale levels are excluded.
       for (size_t s = 1; s < a.size2() - 1; s++)
       {
         sum += std::fabs(a(i,s) - b(j,s));
       }
+      // TODO: Discuss with Karel if there shouldn't be a normalization 
+      // with last_row_shift here.
       ret(i,j) = (1.0 / a.size2()) * sum;
     }
   }
@@ -189,6 +203,8 @@ geometry_msgs::Polygon center(geometry_msgs::Polygon& p)
   return centeredPolygon;
 }
 
+// TODO: Get explanation how minDistance works.
+// TODO: Change the name because there is no minimization in minDistance.
 double minDistance(const matrix& compared, const int start)
 {
   size_t n = compared.size1();
@@ -212,16 +228,20 @@ double minDistance(const matrix& compared, const int start)
     ROS_INFO("D %f %f",compared(i,i), D(i,i)); 
     }
     */
-  for (size_t index = 1 ; index < n; index ++ )
+  for (size_t i = 1 ; i < n; i++)
   {
     for (size_t j = 1; j < m; j++)
     {
-      D(index,j) = compared(index,(j+start) % m) + std::min(D(index-1,j), std::min(D(index,(j-1)), D(index-1, (j-1))));
+      D(i,j) = compared(i,(j+start) % m) + std::min(D(i-1,j), std::min(D(i,(j-1)), D(i-1, (j-1))));
     }
   }
   return D(n - 1, m - 1); 
 } 
 
+// TODO: write a class for similarity in order to avoid global variables.
+
+/* PolygonSimilarity service callback
+ */
 bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
     polygon_matcher::PolygonSimilarity::Response& res)
 {
@@ -253,8 +273,8 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   // TODO: discuss with Karel the interest of the complexity normalization.
   double C1 = compute_convexity(polygon1evo, mcc1);
   double C2 = compute_convexity(polygon2evo, mcc2);
-  ROS_DEBUG("c1 %f", C1);
-  ROS_DEBUG("c2 %f", C2);
+  ROS_DEBUG("Complexity normalization of polygon 1 = %f", C1);
+  ROS_DEBUG("Complexity normalization of polygon 2 = %f", C2);
 
   res.processingTime = ros::Time::now() - start;
   ROS_DEBUG("Multi-scale representation created after %.1f s", res.processingTime.toSec());
@@ -265,12 +285,13 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   ROS_DEBUG("Comparison created after %.1f s", res.processingTime.toSec());
 
   std::vector<double> result;
+  result.reserve(comp.size2());
   for (size_t i = 0; i < comp.size2(); i++)
   {
     result.push_back(minDistance(comp, i));
   }
-
   res.rawSimilarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (g_num_samples));
+
   res.processingTime = ros::Time::now() - start;
   ROS_DEBUG("Sending back response: %f  (in %.1f s)", res.rawSimilarity, res.processingTime.toSec());
 
@@ -284,6 +305,21 @@ int main(int argc, char **argv)
   ros::NodeHandle n("~");
 
   n.param<int>("max_thread", max_thread, 1);
+
+  // Number of points to keep for the mcc computation.
+  int sample_count;
+  n.param<int>("sample_count", sample_count, 100);
+  g_num_samples = sample_count;
+
+  // Number of scales to compute.
+  int scale_count;
+  n.param<int>("scale_count", scale_count, 10);
+  g_max_sigma = scale_count;
+
+  // With rotation_invariance = true, no cyclic optimisation will be done in compare.
+  bool rotation_invariance;
+  n.param<bool>("rotation_invariance", rotation_invariance, true);
+  g_rotation_invariance = rotation_invariance;
 
   ros::ServiceServer service = n.advertiseService(ros::this_node::getName(), similarity);
   ros::Publisher pub = n.advertise<std_msgs::String>("node_register", 10, true);
