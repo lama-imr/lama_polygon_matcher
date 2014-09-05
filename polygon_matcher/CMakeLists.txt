@@ -5,10 +5,11 @@ project(polygon_matcher)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-	roscpp
-	std_msgs
 	geometry_msgs
 	lama_interfaces
+	message_generation
+	roscpp
+	std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -82,7 +83,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES polygon_matcher
-	CATKIN_DEPENDS roscpp std_msgs geometry_msgs lama_interfaces
+	CATKIN_DEPENDS geometry_msgs lama_interfaces message_runtime roscpp std_msgs
 #  DEPENDS system_lib
 )
 

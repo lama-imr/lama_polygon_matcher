@@ -5,11 +5,11 @@ project(pm_fourier)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-	roscpp
-	std_msgs
 	geometry_msgs
 	lama_common
 	polygon_matcher
+	roscpp
+	std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -85,7 +85,7 @@ pkg_check_modules(gsl REQUIRED gsl)
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES pm_fourier
-  CATKIN_DEPENDS roscpp std_msgs geometry_msgs polygon_matcher
+  CATKIN_DEPENDS geometry_msgs lama_common polygon_matcher roscpp std_msgs
   DEPENDS gsl
 )
 
@@ -116,7 +116,7 @@ add_executable(pm_fourier src/pm_fourier_node.cpp ${SRC})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(pm_fourier_node pm_fourier_generate_messages_cpp)
+#add_dependencies(pm_fourier pm_fourier_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(pm_fourier
