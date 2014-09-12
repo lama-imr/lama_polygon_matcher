@@ -36,7 +36,6 @@
 unsigned int g_num_samples;
 
 // Number of scales to compute.
-// TODO: talk with Karel: according to article, 10 should be sufficient.
 unsigned int g_max_sigma;
 
 bool g_rotation_invariance;
@@ -77,6 +76,7 @@ bool evolve(geometry_msgs::Polygon& input, polygon_list& output, unsigned int ma
       for (unsigned int j = 0; j < input.points.size(); j++)
       {
         // Apply a Gaussian kernel.
+        // TODO: Apply the Gaussian kernel only where relevant.
         distance = std::min(abs(j - i), abs(input.points.size() - abs(j - i)));
         value = 1.0 / (s * sqrt(2.0 * M_PI)) * exp(-(distance * distance) / (2.0 * s * s));
         sumX += input.points[j].x * value;
@@ -249,7 +249,7 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   ROS_DEBUG("Request: size_1=%zu, size_2=%zu", req.polygon1.points.size(), req.polygon2.points.size());
   ros::Time start = ros::Time::now();
 
-  // TODO:  talk with Karel with centeredPolygon1 not used.
+  // TODO:  talk with Karel why centeredPolygon1 not used.
   // geometry_msgs::Polygon centeredPolygon1 = center(req.polygon1);
   // geometry_msgs::Polygon centeredPolygon2 = center(req.polygon2);
 
@@ -312,8 +312,9 @@ int main(int argc, char **argv)
   g_num_samples = sample_count;
 
   // Number of scales to compute.
+  // TODO: talk with Karel: according to article, 10 should be sufficient.
   int scale_count;
-  n.param<int>("scale_count", scale_count, 10);
+  n.param<int>("scale_count", scale_count, 20);
   g_max_sigma = scale_count;
 
   // With rotation_invariance = true, no cyclic optimisation will be done in compare.
