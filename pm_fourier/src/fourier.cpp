@@ -15,7 +15,7 @@
 using std::vector;
 using lama::Point2;
 
-double getSimpleSimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size)
+double getSimpleDissimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size)
 {
 
   if (fft1.size() != fft2.size() || fft1.size() == 0 || fft2.size() == 0)
@@ -41,7 +41,7 @@ double getSimpleSimilarityFft(const vector<double> &fft1, const vector<double> &
     //b[i] = (fft2[2*i]);
   }
 
-  double r;
+  double r = 0;
   for(size_t i = 0; i < a.size(); i++)
   {
     r += sqrt((a[i] - b[i]) * (a[i] - b[i]));
@@ -83,7 +83,7 @@ static vector<double> convertPolygonToRange(const vector<Point2> &polygon)
 }
 
 
-double getSimilarityFourier(const vector<Point2> &polygon1, const vector<Point2> &polygon2, const int fftSize)
+double getDissimilarityFourier(const vector<Point2> &polygon1, const vector<Point2> &polygon2, const int fftSize)
 {
   if (fftSize <= 0)
   {
@@ -109,8 +109,8 @@ double getSimilarityFourier(const vector<Point2> &polygon1, const vector<Point2>
     a2.push_back(f2[2*i+1]);
   }
 
-  //const double sim = getSimilarityNccFft(a1,a2,fftSize);
-  const double sim = getSimpleSimilarityFft(a1,a2,fftSize);
+  //const double distance = getDissimilarityNccFft(a1,a2,fftSize);
+  const double distance = getSimpleDissimilarityFft(a1,a2,fftSize);
 
   range1.clear();
   range2.clear();
@@ -119,26 +119,26 @@ double getSimilarityFourier(const vector<Point2> &polygon1, const vector<Point2>
   a1.clear();
   a2.clear();
 
-  return sim;
+  return distance;
 
 }
 
 
-/* returns similarity through cross correlation */
-double getSimilarityCorrelation(const vector<double> &range1, const vector<double> &range2) {
-
+/* returns dissimilarity through cross correlation */
+double getDissimilarityCorrelation(const vector<double> &range1, const vector<double> &range2)
+{
   vector<double> f1(fft2(range1));
   vector<double> f2(fft2(range2));
 
   double val;
-  int s = getAngleShiftFFT(f1, f2, val);
+  getAngleShiftFFT(f1, f2, val);
 
   return val;
 }
 
 
-/* returns similarity through cross correlation */
-double getSimilarityCorrelation(const int n1, const int n2, double *des1, double *des2)
+/* returns dissimilarity through cross correlation */
+double getDissimilarityCorrelation(const int n1, const int n2, double *des1, double *des2)
 {
   /*
      vector<double> range1(getDescriptorData(n1,des1));	
@@ -153,7 +153,7 @@ double getSimilarityCorrelation(const int n1, const int n2, double *des1, double
   return 0;//val;
 }
 
-double getSimilarityNccFft(const vector<double> &fft1, const vector<double> &fft2, const int size)  
+double getDissimilarityNccFft(const vector<double> &fft1, const vector<double> &fft2, const int size)  
 {
   if (fft1.size() != fft2.size() || fft1.size() == 0 || fft2.size() == 0)
   {

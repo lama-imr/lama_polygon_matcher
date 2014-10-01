@@ -2,7 +2,7 @@
 
 if (@ARGV < 4) {
     print STDERR "usage: $0 <file.results> <datasetdir> <isResultsSymmetric(0/1)><prefix>\n";
-    print STDERR "file.results          contains results in form 'battle-1 rat-14 X Y', where X is similarity and Y is processing time\n";
+    print STDERR "file.results          contains results in form 'battle-1 rat-14 X Y', where X is dissimilarity and Y is processing time\n";
     print STDERR "datasetdir            pointer to directory with images\n";
     print STDERR "isResultsSymmetric    1 .. file.results contains both 'battle-1 rat-4' and 'rat-14 battle-2'\n";
     print STDERR "                      0 .. file.results contains only one of them\n";
@@ -187,7 +187,7 @@ my $rf = "<font color=\"red\">";
 my $erf = "</font>";
 
 print $fo "Precision-recall for distances in interval: $bf $minTh $ebf : $bf $maxTh $ebf : $bf $deltaTh $ebf \n";
-print $fo "Similarity: min= $bf $minDist $ebf, max= $bf $maxDist $ebf <br/>\n";
+print $fo "Dissimilarity: min= $bf $minDist $ebf, max= $bf $maxDist $ebf <br/>\n";
 if ($minTh > $minDist or $maxTh < $maxDist) {
     print $fo "<b>$rf You have to rerun processData.pl and set minTh=$minDist and maxTh=$maxDist! $erf </b><br/>\n";
     print STDERR "You have to rerun processData.pl and set minTh=$minDist and maxTh=$maxDist! \n";

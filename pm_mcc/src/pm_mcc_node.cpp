@@ -1,5 +1,5 @@
 /********************************************
- * Shape similarity measurement based on the Multi-scale
+ * Shape dissimilarity measurement based on the Multi-scale
  * Convexity Concavity (MCC) representation.
  *
  * Based on article 
@@ -30,7 +30,7 @@
 #include <std_msgs/String.h>
 #include <lama_common/point.h>
 #include <lama_common/polygon.h>
-#include <polygon_matcher/PolygonSimilarity.h>
+#include <polygon_matcher/PolygonDissimilarity.h>
 
 // Number of points to keep for the mcc computation.
 unsigned int g_num_samples;
@@ -238,12 +238,12 @@ double minDistance(const matrix& compared, const int start)
   return D(n - 1, m - 1); 
 } 
 
-// TODO: write a class for similarity in order to avoid global variables.
+// TODO: write a class for dissimilarity in order to avoid global variables.
 
-/* PolygonSimilarity service callback
+/* PolygonDissimilarity service callback
  */
-bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
-    polygon_matcher::PolygonSimilarity::Response& res)
+bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
+    polygon_matcher::PolygonDissimilarity::Response& res)
 {
 
   ROS_DEBUG("Request: size_1=%zu, size_2=%zu", req.polygon1.points.size(), req.polygon2.points.size());
@@ -290,10 +290,10 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
   {
     result.push_back(minDistance(comp, i));
   }
-  res.raw_similarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (g_num_samples));
+  res.raw_dissimilarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (g_num_samples));
 
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Sending back response: %f  (in %.1f s)", res.raw_similarity, res.processing_time.toSec());
+  ROS_DEBUG("Sending back response: %f  (in %.1f s)", res.raw_dissimilarity, res.processing_time.toSec());
 
   return true;
 }
@@ -301,7 +301,7 @@ bool similarity(polygon_matcher::PolygonSimilarity::Request& req,
 int main(int argc, char **argv)
 {
   int max_thread;
-  ros::init(argc, argv, "mcc_polygon_similarity_server");
+  ros::init(argc, argv, "mcc_polygon_dissimilarity_server");
   ros::NodeHandle n("~");
 
   n.param<int>("max_thread", max_thread, 1);
@@ -322,7 +322,7 @@ int main(int argc, char **argv)
   n.param<bool>("rotation_invariance", rotation_invariance, true);
   g_rotation_invariance = rotation_invariance;
 
-  ros::ServiceServer service = n.advertiseService(ros::this_node::getName(), similarity);
+  ros::ServiceServer service = n.advertiseService(ros::this_node::getName(), dissimilarity);
   ros::Publisher pub = n.advertise<std_msgs::String>("node_register", 10, true);
 
   ROS_INFO("Ready to work (with %i threads)", max_thread);

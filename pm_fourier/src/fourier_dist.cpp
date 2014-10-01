@@ -1,12 +1,12 @@
 #include <pm_fourier/fourier_dist.h>
 
 FourierDistance::FourierDistance(ros::NodeHandle &node) :
-node(node)
+  node(node)
 {
 }
 
-bool FourierDistance::similarity(polygon_matcher::PolygonSimilarity::Request& req,
-    polygon_matcher::PolygonSimilarity::Response& res)
+bool FourierDistance::dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
+    polygon_matcher::PolygonDissimilarity::Response& res)
 {
   ros::Time start = ros::Time::now();
 
@@ -28,7 +28,7 @@ bool FourierDistance::similarity(polygon_matcher::PolygonSimilarity::Request& re
   vector<Point2> rpol2(resamplePolygon(pts2, numOfSamples, delta2));
 
   const int fftSize = 30; // number of harmonics
-  res.raw_similarity = getSimilarityFourier(rpol1, rpol2, fftSize);
+  res.raw_dissimilarity = getDissimilarityFourier(rpol1, rpol2, fftSize);
   res.processing_time = ros::Time::now() - start;
   ROS_DEBUG("sending back response in %f s", res.processing_time.toSec());
 

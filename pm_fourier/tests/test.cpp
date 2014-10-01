@@ -8,28 +8,29 @@
 #include <numeric>
 #include <sstream>
 
-#include <pm_fourier/spoint.h>
-#include <pm_fourier/resample.h>
+#include <lama_common/point.h>
+#include <lama_common/polygon.h>
 #include <pm_fourier/fourier.h>
 #include "utils.h"
 
 #define intro if (id==-1) { cerr << myId << " : " << __FUNCTION__ << "\n"; return; } else if (id!=myId) return;
 
 using namespace std;
+using lama::Point2;
 
-static void loadPolygon(const char *file, vector<SPoint> &polygon) {
+static void loadPolygon(const char *file, vector<Point2> &polygon) {
   ifstream ifs(file);
   polygon.clear();
   double x,y;
   while(ifs) {
     if (ifs >> x >> y) {
-      polygon.push_back(SPoint(x,y));
+      polygon.push_back(Point2(x,y));
     }
   }
   ifs.close();
 }
 
-void getSimilarity_fourier(int argc, char **argv, const int id, const int myId) {
+void getDissimilarity_fourier(int argc, char **argv, const int id, const int myId) {
   intro;
   if (argc < 3) {
     cerr << "usage: " << argv[0] << " <polygonFile1> <polygonFile2> <samples>\n";
@@ -44,19 +45,19 @@ void getSimilarity_fourier(int argc, char **argv, const int id, const int myId) 
 
   struct rusage t1,t2;
   getTime(&t1);
-  vector<SPoint> polygon1;
-  vector<SPoint> polygon2;
+  vector<Point2> polygon1;
+  vector<Point2> polygon2;
   loadPolygon(mapFile1,polygon1);
   loadPolygon(mapFile2,polygon2);
 
-  double delta1, delta2;
+  double delta1;
   const int numOfSamples = 200;
   const int fftSize = 20;
 
-  vector<SPoint> rpol1(resamplePolygon(polygon1,numOfSamples,delta1));
-  vector<SPoint> rpol2(resamplePolygon(polygon2,numOfSamples,delta1));
+  vector<Point2> rpol1(resamplePolygon(polygon1,numOfSamples,delta1));
+  vector<Point2> rpol2(resamplePolygon(polygon2,numOfSamples,delta1));
 
-  const double sim = getSimilarityFourier(rpol1, rpol2,fftSize);
+  const double sim = getDissimilarityFourier(rpol1, rpol2,fftSize);
   getTime(&t2);
   getTime(t1,t2);
   rpol1.clear(); rpol2.clear(); polygon1.clear(); polygon2.clear();
@@ -64,7 +65,7 @@ void getSimilarity_fourier(int argc, char **argv, const int id, const int myId) 
   cout << sim << " " << getTime(t1,t2) << "\n";
 }
 
-void getSimilarity_fourier_from_filelist(int argc, char **argv, const int id, const int myId) {
+void getDissimilarity_fourier_from_filelist(int argc, char **argv, const int id, const int myId) {
   intro;
   if (argc < 4) {
     cerr << "usage: " << argv[0] << " <fileList> <fftSize> <prefix>\n";
@@ -95,17 +96,17 @@ void getSimilarity_fourier_from_filelist(int argc, char **argv, const int id, co
   for(int i=0;i<(int)files.size();i++) {
     struct rusage t1,t2;
     getTime(&t1);
-    vector<SPoint> polygon1;
-    vector<SPoint> polygon2;
+    vector<Point2> polygon1;
+    vector<Point2> polygon2;
     loadPolygon(files[i].first.c_str(),polygon1);
     loadPolygon(files[i].second.c_str(),polygon2);
 
-    double delta1, delta2;
+    double delta1;
 
-    vector<SPoint> rpol1(resamplePolygon(polygon1,numOfSamples,delta1));
-    vector<SPoint> rpol2(resamplePolygon(polygon2,numOfSamples,delta1));
+    vector<Point2> rpol1(resamplePolygon(polygon1,numOfSamples,delta1));
+    vector<Point2> rpol2(resamplePolygon(polygon2,numOfSamples,delta1));
 
-    const double sim = getSimilarityFourier(rpol1, rpol2,fftSize);
+    const double sim = getDissimilarityFourier(rpol1, rpol2,fftSize);
     getTime(&t2);
     getTime(t1,t2);
     rpol1.clear(); rpol2.clear(); polygon1.clear(); polygon2.clear();
@@ -137,8 +138,8 @@ int main(int argc, char **argv) {
     argc--;
     argv++;
   }
-  getSimilarity_fourier(argc,argv,k,1);
-  getSimilarity_fourier_from_filelist(argc,argv,k,2);
+  getDissimilarity_fourier(argc,argv,k,1);
+  getDissimilarity_fourier_from_filelist(argc,argv,k,2);
 }
 
 #undef intro

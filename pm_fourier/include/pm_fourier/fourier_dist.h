@@ -7,7 +7,7 @@
 
 #include <lama_common/point.h>
 #include <lama_common/polygon.h>
-#include <polygon_matcher/PolygonSimilarity.h>
+#include <polygon_matcher/PolygonDissimilarity.h>
 
 #include <pm_fourier/fourier.h>
 
@@ -17,10 +17,13 @@ using lama::Point2;
 class FourierDistance
 {
   public:
+
     FourierDistance(ros::NodeHandle& node);
-    bool similarity(polygon_matcher::PolygonSimilarity::Request& req, polygon_matcher::PolygonSimilarity::Response& res);
+
+    bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req, polygon_matcher::PolygonDissimilarity::Response& res);
 
   private:
+
     ros::NodeHandle &node;
 };
 

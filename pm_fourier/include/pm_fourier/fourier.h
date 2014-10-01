@@ -8,11 +8,11 @@
 using std::vector;
 using lama::Point2;
 
-double getSimpleSimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size);
+double getSimpleDissimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size);
 
-double getSimilarityNccFft(const vector<double> &fft1, const vector<double> &fft2, const int size);
+double getDissimilarityNccFft(const vector<double> &fft1, const vector<double> &fft2, const int size);
 
-double getSimilarityFourier(const vector<Point2> &polygon1, const vector<Point2> &polygon2, const int fftSize);
+double getDissimilarityFourier(const vector<Point2> &polygon1, const vector<Point2> &polygon2, const int fftSize);
 
 #endif // _PM_FOURIER_FOURIER_H_
 
