@@ -188,16 +188,16 @@ geometry_msgs::Polygon center(geometry_msgs::Polygon& p)
   float sumy = 0;
   geometry_msgs::Polygon centeredPolygon;
   centeredPolygon.points.reserve(p.points.size());
-  for (auto pt : p.points)
+  for (size_t i = 0; i < p.points.size(); ++i)
   {
-    sumx += pt.x;
-    sumy += pt.y;
+    sumx += p.points[i].x;
+    sumy += p.points[i].y;
   }
-  for (auto inpoint : p.points)
+  for (size_t i = 0; i < p.points.size(); ++i)
   {
     geometry_msgs::Point32 outpoint;
-    outpoint.x = inpoint.x - sumx;
-    outpoint.y = inpoint.y - sumy;
+    outpoint.x = p.points[i].x - sumx;
+    outpoint.y = p.points[i].y - sumy;
     centeredPolygon.points.push_back(outpoint);
   }
   return centeredPolygon;
