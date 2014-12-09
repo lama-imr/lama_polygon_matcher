@@ -12,7 +12,7 @@
 #include <pm_fourier/fourier.h>
 
 using std::vector;
-using lama::Point2;
+using lama_common::Point2;
 
 class FourierDistance
 {

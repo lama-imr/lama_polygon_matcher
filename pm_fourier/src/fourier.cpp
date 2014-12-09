@@ -13,7 +13,7 @@
 #include <lama_common/point.h>
 
 using std::vector;
-using lama::Point2;
+using lama_common::Point2;
 
 double getSimpleDissimilarityFft(const vector<double> &fft1, const vector<double> &fft2, const int size)
 {

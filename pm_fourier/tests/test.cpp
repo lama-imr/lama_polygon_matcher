@@ -16,7 +16,7 @@
 #define intro if (id==-1) { cerr << myId << " : " << __FUNCTION__ << "\n"; return; } else if (id!=myId) return;
 
 using namespace std;
-using lama::Point2;
+using lama_common::Point2;
 
 static void loadPolygon(const char *file, vector<Point2> &polygon) {
   ifstream ifs(file);
@@ -54,8 +54,8 @@ void getDissimilarity_fourier(int argc, char **argv, const int id, const int myI
   const int numOfSamples = 200;
   const int fftSize = 20;
 
-  vector<Point2> rpol1(resamplePolygon(polygon1,numOfSamples,delta1));
-  vector<Point2> rpol2(resamplePolygon(polygon2,numOfSamples,delta1));
+  vector<Point2> rpol1(lama_common::resamplePolygon(polygon1,numOfSamples,delta1));
+  vector<Point2> rpol2(lama_common::resamplePolygon(polygon2,numOfSamples,delta1));
 
   const double sim = getDissimilarityFourier(rpol1, rpol2,fftSize);
   getTime(&t2);

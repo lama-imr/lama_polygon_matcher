@@ -256,8 +256,8 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
   geometry_msgs::Polygon polygon1res;
   geometry_msgs::Polygon polygon2res; 
   double delta;
-  polygon1res.points = lama::resamplePolygon(req.polygon1.points, g_num_samples, delta);
-  polygon2res.points = lama::resamplePolygon(req.polygon2.points, g_num_samples, delta);
+  polygon1res.points = lama_common::resamplePolygon(req.polygon1.points, g_num_samples, delta);
+  polygon2res.points = lama_common::resamplePolygon(req.polygon2.points, g_num_samples, delta);
   polygon_list polygon1evo;
   polygon_list polygon2evo;
   //create multi-polygon representation (increasing sigma)
