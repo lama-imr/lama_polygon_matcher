@@ -323,12 +323,12 @@ int main(int argc, char **argv)
   g_rotation_invariance = rotation_invariance;
 
   ros::ServiceServer service = n.advertiseService(ros::this_node::getName(), dissimilarity);
-  ros::Publisher pub = n.advertise<std_msgs::String>("node_register", 10, true);
+  /* ros::Publisher pub = n.advertise<std_msgs::String>("node_register", 10, true); */
 
   ROS_INFO("Ready to work (with %i threads)", max_thread);
-  std_msgs::String msg;
-  msg.data = ros::this_node::getName();
-  pub.publish(msg);
+  /* std_msgs::String msg; */
+  /* msg.data = ros::this_node::getName(); */
+  /* pub.publish(msg); */
 
   ros::MultiThreadedSpinner spinner(max_thread);
   spinner.spin();
