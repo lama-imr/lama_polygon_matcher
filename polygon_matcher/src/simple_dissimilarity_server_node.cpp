@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
   ros::ServiceServer service = n.advertiseService("simple_polygon_dissimilarity", dissimilarity);
 
-  ROS_INFO("%s: ready to work", ros::this_node::getName().c_str());
+  ROS_INFO_STREAM(ros::this_node::getName() << "%s: ready to work");
   ros::spin();
 
   return 0;
