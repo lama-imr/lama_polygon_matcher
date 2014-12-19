@@ -302,28 +302,28 @@ int main(int argc, char **argv)
 {
   int max_thread;
   ros::init(argc, argv, "mcc_polygon_dissimilarity_server");
-  ros::NodeHandle n("~");
+  ros::NodeHandle nh("~");
 
-  n.param<int>("max_thread", max_thread, 1);
+  nh.param<int>("max_thread", max_thread, 1);
 
   // Number of points to keep for the mcc computation.
   int sample_count;
-  n.param<int>("sample_count", sample_count, 100);
+  nh.param<int>("sample_count", sample_count, 100);
   g_num_samples = sample_count;
 
   // Number of scales to compute.
   // TODO: talk with Karel: according to article, 10 should be sufficient.
   int scale_count;
-  n.param<int>("scale_count", scale_count, 20);
+  nh.param<int>("scale_count", scale_count, 20);
   g_max_sigma = scale_count;
 
   // With rotation_invariance = true, no cyclic optimisation will be done in compare.
   bool rotation_invariance;
-  n.param<bool>("rotation_invariance", rotation_invariance, true);
+  nh.param<bool>("rotation_invariance", rotation_invariance, true);
   g_rotation_invariance = rotation_invariance;
 
-  ros::ServiceServer service = n.advertiseService(ros::this_node::getName(), dissimilarity);
-  /* ros::Publisher pub = n.advertise<std_msgs::String>("node_register", 10, true); */
+  ros::ServiceServer service = nh.advertiseService("compute_dissimilarity", dissimilarity);
+  /* ros::Publisher pub = nh.advertise<std_msgs::String>("node_register", 10, true); */
 
   ROS_INFO("Ready to work (with %i threads)", max_thread);
   /* std_msgs::String msg; */
