@@ -7,7 +7,7 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request  &req,
 {
   float diff = 0;
   ros::Time start = ros::Time::now();
-  ROS_DEBUG("request: s1=%zu, s2=%zu", req.polygon1.points.size(), req.polygon2.points.size());
+  ROS_DEBUG("request: polygon1.size = %zu, polygon2.size = %zu", req.polygon1.points.size(), req.polygon2.points.size());
   for (size_t i = 0; i < req.polygon1.points.size(); i++)
   {
     for (size_t j = 0; j < req.polygon2.points.size(); j++)
@@ -25,11 +25,11 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request  &req,
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "simple_polygon_dissimilarity_server");
-  ros::NodeHandle n;
+  ros::NodeHandle nh("~");
 
-  ros::ServiceServer service = n.advertiseService("simple_polygon_dissimilarity", dissimilarity);
+  ros::ServiceServer service = nh.advertiseService("compute_dissimilarity", dissimilarity);
 
-  ROS_INFO_STREAM(ros::this_node::getName() << "%s: ready to work");
+  ROS_INFO_STREAM(ros::this_node::getName() << "/compute_dissimilarity: server ready");
   ros::spin();
 
   return 0;
