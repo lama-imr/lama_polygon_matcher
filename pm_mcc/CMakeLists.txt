@@ -113,7 +113,7 @@ add_dependencies(pm_mcc polygon_matcher_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(pm_mcc
-	${catkin_LIBRARIES}
+  ${catkin_LIBRARIES}
 )
 
 #############
@@ -131,11 +131,11 @@ target_link_libraries(pm_mcc
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS pm_mcc pm_mcc_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS pm_mcc
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
