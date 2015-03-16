@@ -61,34 +61,43 @@ int inpoly(const geometry_msgs::Polygon& p, const geometry_msgs::Point32& point)
   return c;
 }
 
-bool evolve(geometry_msgs::Polygon& input, polygon_list& output, unsigned int maxSigma)
+/* Evolve a polygon
+ *
+ * @param[in] input Polygon to evolve
+ * @param[out] output List of evolved polygons with scales { 0, 1, .., max_sigma}.
+ * @param[in] max_sigma Scale count.
+ */
+bool evolve(const geometry_msgs::Polygon& input, polygon_list& output, unsigned int max_sigma)
 {
-  double distance;
-  double value;
-  output.push_back(input);
-  for (unsigned int s = 1; s < maxSigma; s++)
+  output.clear();
+  output.reserve(max_sigma);
+  output.push_back(input);  // With sigma == 0.
+  const int size = input.points.size();
+  for (unsigned int s = 1; s < max_sigma; s++)
   {
-    geometry_msgs::Polygon pSigma;
-    for (unsigned int i = 0; i < input.points.size(); i++)
+    geometry_msgs::Polygon evolved_polygon;
+    evolved_polygon.points.reserve(size);
+    // Index distance to consider the filter impulse reponse negligeable.
+    // https://en.wikipedia.org/wiki/Scale_space_implementation#The_sampled_Gaussian_kernel.
+    const int max_dist_to_filter = std::min((int)(4 * s + 1), size);
+    for (int i = 0; i < size; i++)
     {
       double sumX = 0;
       double sumY = 0;
-      for (unsigned int j = 0; j < input.points.size(); j++)
+      for (int j = -max_dist_to_filter; j < max_dist_to_filter + 1; j++)
       {
         // Apply a Gaussian kernel.
-        // TODO: Apply the Gaussian kernel only where relevant.
-        distance = std::min(abs(j - i), abs(input.points.size() - abs(j - i)));
-        value = 1.0 / (s * sqrt(2.0 * M_PI)) * exp(-(distance * distance) / (2.0 * s * s));
-        sumX += input.points[j].x * value;
-        sumY += input.points[j].y * value;
+        const double filter = 1.0 / (s * sqrt(2.0 * M_PI)) * std::exp(-((double)j * (double)j) / (2.0 * s * s));
+        sumX += input.points[(i - j + size) % size].x * filter;
+        sumY += input.points[(i - j + size) % size].y * filter;
       }
       geometry_msgs::Point32 p;
       p.x = sumX;
       p.y = sumY;
       p.z = 0;
-      pSigma.points.push_back(p);
+      evolved_polygon.points.push_back(p);
     }
-    output.push_back(pSigma);
+    output.push_back(evolved_polygon);
   }
   return true;
 }
@@ -120,7 +129,7 @@ double compute_convexity(const polygon_list& polygons, matrix& m)
       // k = 1 for convex part of the polygon contour.
       int k = 2 * inpoly(polygons[s], polygons[s-1].points[u]) - 1;
       // TODO: talk with Karel why not m(u,s) as stated in the article.
-      m(u,s-1) = k * sqrt(
+      m(u, s-1) = k * sqrt(
           (polygons[s].points[u].x - polygons[s-1].points[u].x) *
           (polygons[s].points[u].x - polygons[s-1].points[u].x) + 
           (polygons[s].points[u].y - polygons[s-1].points[u].y) *
@@ -204,8 +213,7 @@ geometry_msgs::Polygon center(geometry_msgs::Polygon& p)
 }
 
 // TODO: Get explanation how minDistance works.
-// TODO: Change the name because there is no minimization in minDistance.
-double minDistance(const matrix& compared, const int start)
+double minDistance(const matrix& compared, int start)
 {
   size_t n = compared.size1();
   size_t m = compared.size2();
@@ -240,7 +248,7 @@ double minDistance(const matrix& compared, const int start)
 
 // TODO: write a class for dissimilarity in order to avoid global variables.
 
-/* PolygonDissimilarity service callback
+/** PolygonDissimilarity service callback
  */
 bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
     polygon_matcher::PolygonDissimilarity::Response& res)
@@ -266,7 +274,7 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
   //create multiscale representation 
 
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Multi-polygon representation created after %.1f s", res.processing_time.toSec());
+  ROS_DEBUG("Multi-polygon representation created after %.4f s", res.processing_time.toSec());
   matrix mcc1(g_num_samples, g_max_sigma);
   matrix mcc2(g_num_samples, g_max_sigma);
 
@@ -312,15 +320,12 @@ int main(int argc, char **argv)
   g_num_samples = sample_count;
 
   // Number of scales to compute.
-  // TODO: talk with Karel: according to article, 10 should be sufficient.
   int scale_count;
-  nh.param<int>("scale_count", scale_count, 20);
+  nh.param<int>("scale_count", scale_count, 10);
   g_max_sigma = scale_count;
 
   // With rotation_invariance = true, no cyclic optimisation will be done in compare.
-  bool rotation_invariance;
-  nh.param<bool>("rotation_invariance", rotation_invariance, true);
-  g_rotation_invariance = rotation_invariance;
+  nh.param<bool>("rotation_invariance", g_rotation_invariance, true);
 
   ros::ServiceServer service = nh.advertiseService("compute_dissimilarity", dissimilarity);
   /* ros::Publisher pub = nh.advertise<std_msgs::String>("node_register", 10, true); */
