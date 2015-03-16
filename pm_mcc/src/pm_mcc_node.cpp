@@ -270,6 +270,19 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
   evolve(polygon2res, polygon2evo, g_max_sigma);
   //create multiscale representation 
 
+  // DEBUG
+  for (size_t s = 0; s < polygon1evo.size(); ++s)
+  {
+    std::stringstream ss;
+    ss << "/tmp/evo" << s << ".dat";
+    std::ofstream ofs(ss.str().c_str());
+    for (size_t i = 0; i < polygon1evo[s].points.size(); ++i)
+    {
+      ofs << polygon1evo[s].points[i].x << " " << polygon1evo[s].points[i].y << "\n";
+    }
+    ofs.close();
+  }
+
   res.processing_time = ros::Time::now() - start;
   ROS_DEBUG("Multi-polygon representation created after %.4f s", res.processing_time.toSec());
   matrix mcc1(g_num_samples, g_max_sigma);
