@@ -17,14 +17,12 @@
  *************************************/
 
 #include <algorithm>
-#include <iostream>
 #include <fstream>
 #include <limits>
 #include <cmath>
 #include <cassert>
 
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
 
 #include <ros/ros.h>
 #include <std_msgs/String.h>
@@ -127,21 +125,21 @@ double compute_convexity(const polygon_list& polygons, matrix& m)
     {
       // k = 1 if point inside polygon; -1 otherwise.
       // k = 1 for convex part of the polygon contour.
-      int k = 2 * inpoly(polygons[s], polygons[s-1].points[u]) - 1;
+      int k = 2 * inpoly(polygons[s], polygons[s - 1].points[u]) - 1;
       // TODO: talk with Karel why not m(u,s) as stated in the article.
-      m(u, s-1) = k * sqrt(
-          (polygons[s].points[u].x - polygons[s-1].points[u].x) *
-          (polygons[s].points[u].x - polygons[s-1].points[u].x) + 
-          (polygons[s].points[u].y - polygons[s-1].points[u].y) *
-          (polygons[s].points[u].y - polygons[s-1].points[u].y));
+      m(u, s - 1) = k * sqrt(
+          (polygons[s].points[u].x - polygons[s - 1].points[u].x) *
+          (polygons[s].points[u].x - polygons[s - 1].points[u].x) + 
+          (polygons[s].points[u].y - polygons[s - 1].points[u].y) *
+          (polygons[s].points[u].y - polygons[s - 1].points[u].y));
 
-      if (m(u,s-1) < cMin)
+      if (m(u, s - 1) < cMin)
       {
-        cMin = m(u,s-1);
+        cMin = m(u, s - 1);
       }
-      if (m(u,s-1) > cMax)
+      if (m(u, s - 1) > cMax)
       {
-        cMax = m(u,s-1);
+        cMax = m(u, s - 1);
       }
     }
     complexity += (cMax - cMin);
@@ -179,11 +177,11 @@ matrix compare(matrix& a, matrix& b)
       // First and last scale levels are excluded.
       for (size_t s = 1; s < a.size2() - 1; s++)
       {
-        sum += std::fabs(a(i,s) - b(j,s));
+        sum += abs(a(i, s) - b(j, s));
       }
       // TODO: Discuss with Karel if there shouldn't be a normalization 
       // with last_row_shift here.
-      ret(i,j) = (1.0 / a.size2()) * sum;
+      ret(i, j) = (1.0 / a.size2()) * sum;
     }
   }
   return ret;
@@ -212,23 +210,22 @@ geometry_msgs::Polygon center(geometry_msgs::Polygon& p)
   return centeredPolygon;
 }
 
-// TODO: Get explanation how minDistance works.
 double minDistance(const matrix& compared, int start)
 {
   size_t n = compared.size1();
   size_t m = compared.size2();
   matrix D(n, m);
-  D(0,0) = compared(0,start);
+  D(0, 0) = compared(0, start);
   
   //fill start column
   for (size_t i = 1; i < n; i++)
   {
-    D(i,0) = compared(i,start) + D(i-1,0);
+    D(i, 0) = compared(i, start) + D(i - 1, 0);
   }
   //fill first row
   for (size_t j = 1; j < m; j++)
   {
-    D(0,j) = compared(0,(j+start) % m) + D(0,j-1);
+    D(0, j) = compared(0, (j+start) % m) + D(0, j - 1);
   }
   // test 
   /*for (unsigned int  i = 1; i < n; i++) {
@@ -240,7 +237,7 @@ double minDistance(const matrix& compared, int start)
   {
     for (size_t j = 1; j < m; j++)
     {
-      D(i,j) = compared(i,(j+start) % m) + std::min(D(i-1,j), std::min(D(i,(j-1)), D(i-1, (j-1))));
+      D(i, j) = compared(i, (j+start) % m) + std::min(D(i - 1, j), std::min(D(i, (j - 1)), D(i - 1, (j - 1))));
     }
   }
   return D(n - 1, m - 1); 
@@ -285,12 +282,12 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
   ROS_DEBUG("Complexity normalization of polygon 2 = %f", C2);
 
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Multi-scale representation created after %.1f s", res.processing_time.toSec());
+  ROS_DEBUG("Multi-scale representation created after %.4f s", res.processing_time.toSec());
 
   matrix comp = compare(mcc1, mcc2);
 
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Comparison created after %.1f s", res.processing_time.toSec());
+  ROS_DEBUG("Comparison created after %.4f s", res.processing_time.toSec());
 
   std::vector<double> result;
   result.reserve(comp.size2());
@@ -301,7 +298,7 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
   res.raw_dissimilarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (g_num_samples));
 
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Sending back response: %f  (in %.1f s)", res.raw_dissimilarity, res.processing_time.toSec());
+  ROS_DEBUG("Sending back response: %f  (in %.4f s)", res.raw_dissimilarity, res.processing_time.toSec());
 
   return true;
 }
