@@ -17,7 +17,6 @@
  *************************************/
 
 #include <algorithm>
-#include <fstream>
 #include <limits>
 #include <cmath>
 #include <cassert>
@@ -59,7 +58,7 @@ int inpoly(const geometry_msgs::Polygon& p, const geometry_msgs::Point32& point)
   return c;
 }
 
-/* Evolve a polygon
+/** Evolve a polygon
  *
  * @param[in] input Polygon to evolve
  * @param[out] output List of evolved polygons with scales { 0, 1, .., max_sigma}.
@@ -100,7 +99,7 @@ bool evolve(const geometry_msgs::Polygon& input, polygon_list& output, unsigned 
   return true;
 }
 
-/* Compute the convexity of scaled polygons.
+/** Compute the convexity of scaled polygons.
  *
  * Compute the convexity of scaled polygons by looking at the signed distance
  * between a point at scale s and the same point at scale (s - 1).
@@ -109,8 +108,9 @@ bool evolve(const geometry_msgs::Polygon& input, polygon_list& output, unsigned 
  * Return the estimated shape complexity as the average of the differences
  * between max and min convexity/concavity measures over all scale levels.
  *
- * polygons[in] list of scaled polygons.
- * m[out] multi-scale convexity concavity representation.
+ * @param[in] polygons A list of s scaled polygons of n points each.
+ * @param[out] m A multi-scale convexity concavity representation, an (n x s) matrix.
+ * @return The polygon complexity.
  */
 double compute_convexity(const polygon_list& polygons, matrix& m)
 {
@@ -148,15 +148,19 @@ double compute_convexity(const polygon_list& polygons, matrix& m)
   return complexity;
 }
 
-/* Compute the distance between two MCC representations
+/** Compute the distance between two MCC representations
  *
  * Compute the distance between two MCC representations, i.e. for each contour
  * point of a and b (rows) sum the absolute difference on all scale levels
  * (columns).
  * In order to achieve the optional rotational invariance, a circular shift is
  * applied on the rows of the second matrix.
+ *
+ * @param[in] a An (na x m) matrix.
+ * @param[in] b An (nb x m) matrix.
+ * @param[out] An (na x nb) matrix.
  */
-matrix compare(matrix& a, matrix& b)
+matrix compare(const matrix& a, const matrix& b)
 {
   assert(a.size2() == b.size2());
 
@@ -168,48 +172,24 @@ matrix compare(matrix& a, matrix& b)
     last_row_shift = b.size1();
   }
 
-  for (size_t i = 0; i < a.size1(); i++)
+  for (size_t index_row_a = 0; index_row_a < a.size1(); index_row_a++)
   {
-    for (size_t j = 0; j < last_row_shift; j++)
+    for (size_t index_row_b = 0; index_row_b < last_row_shift; index_row_b++)
     {
       double sum = 0;
-      // TODO: Discuss with Karel why not s from 0 to a.size2()
       // First and last scale levels are excluded.
       for (size_t s = 1; s < a.size2() - 1; s++)
       {
-        sum += abs(a(i, s) - b(j, s));
+        sum += abs(a(index_row_a, s) - b(index_row_b, s));
       }
-      // TODO: Discuss with Karel if there shouldn't be a normalization 
-      // with last_row_shift here.
-      ret(i, j) = (1.0 / a.size2()) * sum;
+      ret(index_row_a, index_row_b) = (1.0 / a.size2()) * sum;
     }
   }
   return ret;
 }	
 
-/* Return the polygon which has (0,0) as barycenter
+/** Return the minimal distance
  */
-geometry_msgs::Polygon center(geometry_msgs::Polygon& p)
-{
-  float sumx = 0;
-  float sumy = 0;
-  geometry_msgs::Polygon centeredPolygon;
-  centeredPolygon.points.reserve(p.points.size());
-  for (size_t i = 0; i < p.points.size(); ++i)
-  {
-    sumx += p.points[i].x;
-    sumy += p.points[i].y;
-  }
-  for (size_t i = 0; i < p.points.size(); ++i)
-  {
-    geometry_msgs::Point32 outpoint;
-    outpoint.x = p.points[i].x - sumx;
-    outpoint.y = p.points[i].y - sumy;
-    centeredPolygon.points.push_back(outpoint);
-  }
-  return centeredPolygon;
-}
-
 double minDistance(const matrix& compared, int start)
 {
   size_t n = compared.size1();
@@ -217,22 +197,17 @@ double minDistance(const matrix& compared, int start)
   matrix D(n, m);
   D(0, 0) = compared(0, start);
   
-  //fill start column
+  // Fill start column.
   for (size_t i = 1; i < n; i++)
   {
     D(i, 0) = compared(i, start) + D(i - 1, 0);
   }
-  //fill first row
+  // Fill first row.
   for (size_t j = 1; j < m; j++)
   {
     D(0, j) = compared(0, (j+start) % m) + D(0, j - 1);
   }
-  // test 
-  /*for (unsigned int  i = 1; i < n; i++) {
-    D(i,i) = D(i-1,i-1)+compared(i,(i+start)%n);
-    ROS_INFO("D %f %f",compared(i,i), D(i,i)); 
-    }
-    */
+
   for (size_t i = 1 ; i < n; i++)
   {
     for (size_t j = 1; j < m; j++)
@@ -254,48 +229,30 @@ bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
   ROS_DEBUG("Request: size_1=%zu, size_2=%zu", req.polygon1.points.size(), req.polygon2.points.size());
   ros::Time start = ros::Time::now();
 
-  // TODO:  talk with Karel why centeredPolygon1 not used.
-  // geometry_msgs::Polygon centeredPolygon1 = center(req.polygon1);
-  // geometry_msgs::Polygon centeredPolygon2 = center(req.polygon2);
-
   geometry_msgs::Polygon polygon1res;
   geometry_msgs::Polygon polygon2res; 
   double delta;
   polygon1res.points = lama_common::resamplePolygon(req.polygon1.points, g_num_samples, delta);
   polygon2res.points = lama_common::resamplePolygon(req.polygon2.points, g_num_samples, delta);
+  // Create multi-scale representation (increasing sigma).
   polygon_list polygon1evo;
   polygon_list polygon2evo;
-  //create multi-polygon representation (increasing sigma)
   evolve(polygon1res, polygon1evo, g_max_sigma);
   evolve(polygon2res, polygon2evo, g_max_sigma);
-  //create multiscale representation 
-
-  // DEBUG
-  for (size_t s = 0; s < polygon1evo.size(); ++s)
-  {
-    std::stringstream ss;
-    ss << "/tmp/evo" << s << ".dat";
-    std::ofstream ofs(ss.str().c_str());
-    for (size_t i = 0; i < polygon1evo[s].points.size(); ++i)
-    {
-      ofs << polygon1evo[s].points[i].x << " " << polygon1evo[s].points[i].y << "\n";
-    }
-    ofs.close();
-  }
-
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Multi-polygon representation created after %.4f s", res.processing_time.toSec());
+  ROS_DEBUG("Evolved polygons created after %.4f s", res.processing_time.toSec());
+
   matrix mcc1(g_num_samples, g_max_sigma);
   matrix mcc2(g_num_samples, g_max_sigma);
 
   // TODO: discuss with Karel the interest of the complexity normalization.
-  double C1 = compute_convexity(polygon1evo, mcc1);
-  double C2 = compute_convexity(polygon2evo, mcc2);
+  const double C1 = compute_convexity(polygon1evo, mcc1);
+  const double C2 = compute_convexity(polygon2evo, mcc2);
   ROS_DEBUG("Complexity normalization of polygon 1 = %f", C1);
   ROS_DEBUG("Complexity normalization of polygon 2 = %f", C2);
 
   res.processing_time = ros::Time::now() - start;
-  ROS_DEBUG("Multi-scale representation created after %.4f s", res.processing_time.toSec());
+  ROS_DEBUG("Multi-scale convexity-concavity computed after %.4f s", res.processing_time.toSec());
 
   matrix comp = compare(mcc1, mcc2);
 
@@ -338,12 +295,8 @@ int main(int argc, char **argv)
   nh.param<bool>("rotation_invariance", g_rotation_invariance, true);
 
   ros::ServiceServer service = nh.advertiseService("compute_dissimilarity", dissimilarity);
-  /* ros::Publisher pub = nh.advertise<std_msgs::String>("node_register", 10, true); */
 
   ROS_INFO("Ready to work (with %i threads)", max_thread);
-  /* std_msgs::String msg; */
-  /* msg.data = ros::this_node::getName(); */
-  /* pub.publish(msg); */
 
   ros::MultiThreadedSpinner spinner(max_thread);
   spinner.spin();
