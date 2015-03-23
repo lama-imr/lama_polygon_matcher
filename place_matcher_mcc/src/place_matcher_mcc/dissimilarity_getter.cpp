@@ -1,6 +1,6 @@
-#include <pm_mcc/dissimilarity_getter.h>
+#include <place_matcher_mcc/dissimilarity_getter.h>
 
-namespace pm_mcc
+namespace place_matcher_mcc
 {
 
 using std::sqrt;
@@ -241,4 +241,4 @@ matrix DissimilarityGetter::compare(const matrix& a, const matrix& b)
   return ret;
 }	
 
-} /* namespace pm_mcc */
+} /* namespace place_matcher_mcc */

@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <package>
-  <name>pm_mcc</name>
+  <name>place_matcher_mcc</name>
   <version>0.1.1</version>
-  <description>The pm_mcc package
-
-	  A polygon matcher based on the Multi-scale Convexity Concavity (MCC)
-	  representation. Based on article Adamek, T. and O'Connor, N.E.,
+  <description>Provides a polygon matcher based on the Multi-scale Convexity
+	  Concavity (MCC) representation. Based on article Adamek, T. and O'Connor, N.E.,
 	  A multiscale representation method for nonrigid shapes with a single
 	  closed contour, in IEEE Transactions on Circuits and Systems for Video
 	  Technology, 2004.
@@ -17,7 +15,7 @@
   <license>TODO</license>
 
 
-  <url type="website">http://wiki.ros.org/pm_mcc</url>
+  <url type="website">http://wiki.ros.org/place_matcher_mcc</url>
   <url type="repository">https://github.com/lama-imr/lama_polygon_matcher.git</url>
   <url type="bugtracker">https://github.com/lama-imr/lama_polygon_matcher/issues</url>
 

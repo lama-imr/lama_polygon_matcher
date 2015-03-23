@@ -35,7 +35,7 @@
 
 #include <polygon_matcher/PolygonDissimilarity.h>
 
-namespace pm_mcc
+namespace place_matcher_mcc
 {
 
 typedef boost::numeric::ublas::matrix<double> matrix;
@@ -67,6 +67,6 @@ class DissimilarityGetter
     ros::ServiceServer get_dissimilarity_server_;
 };
 
-} /* namespace pm_mcc */
+} /* namespace place_matcher_mcc */
 
 #endif /* PM_MCC_DISSIMILARITY_GETTER_H */

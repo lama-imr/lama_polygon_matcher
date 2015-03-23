@@ -20,7 +20,7 @@
 
 #include <polygon_matcher/GetCapability.h>
 
-#include <pm_mcc/dissimilarity_getter.h>
+#include <place_matcher_mcc/dissimilarity_getter.h>
 
 bool callback_getCapability(polygon_matcher::GetCapabilityRequest& req, polygon_matcher::GetCapabilityResponse& res)
 {
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
   nh.param<int>("max_thread", max_thread, 1);
 
-  pm_mcc::DissimilarityGetter dissimilarity_getter;
+  place_matcher_mcc::DissimilarityGetter dissimilarity_getter;
 
   // Number of points to keep for the mcc computation.
   if (nh.hasParam("sample_count"))
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 
   ros::ServiceServer get_capability_server = nh.advertiseService("get_capability", callback_getCapability);
   ros::ServiceServer compute_dissimilarity_server = nh.advertiseService("compute_dissimilarity",
-      &pm_mcc::DissimilarityGetter::getDissimilarity, &dissimilarity_getter);
+      &place_matcher_mcc::DissimilarityGetter::getDissimilarity, &dissimilarity_getter);
 
   ROS_INFO("Ready to work (with %i threads)", max_thread);
 
