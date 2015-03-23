@@ -96,13 +96,12 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-# add_library(pm_mcc
-#   src/${PROJECT_NAME}/pm_mcc.cpp
-# )
+add_library(pm_mcc_dissimilarity_getter src/${PROJECT_NAME}/dissimilarity_getter.cpp)
 
 ## Declare a cpp executable
 add_executable(pm_mcc src/pm_mcc_node.cpp)
@@ -112,9 +111,8 @@ add_executable(pm_mcc src/pm_mcc_node.cpp)
 add_dependencies(pm_mcc polygon_matcher_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(pm_mcc
-  ${catkin_LIBRARIES}
-)
+target_link_libraries(pm_mcc pm_mcc_dissimilarity_getter ${catkin_LIBRARIES})
+target_link_libraries(pm_mcc_dissimilarity_getter ${catkin_LIBRARIES})
 
 #############
 ## Install ##
