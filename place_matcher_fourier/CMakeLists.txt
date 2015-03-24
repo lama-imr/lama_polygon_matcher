@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(pm_fourier)
+project(place_matcher_fourier)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -85,7 +85,7 @@ pkg_check_modules(gsl REQUIRED gsl)
 catkin_package(
   INCLUDE_DIRS include
 
-  #  LIBRARIES pm_fourier
+  #  LIBRARIES place_matcher_fourier
 
   CATKIN_DEPENDS
   geometry_msgs
@@ -110,22 +110,22 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(pm_fourier
-#   src/${PROJECT_NAME}/pm_fourier.cpp
+# add_library(place_matcher_fourier
+#   src/${PROJECT_NAME}/place_matcher_fourier.cpp
 # )
 
 ## Declare a cpp executable
 set(SRC ${SRC} src/fourier.cpp)
 set(SRC ${SRC} src/fourier_dist.cpp)
 set(SRC ${SRC} src/angle_shift.cpp)
-add_executable(pm_fourier src/pm_fourier_node.cpp ${SRC})
+add_executable(place_matcher_fourier src/place_matcher_fourier_node.cpp ${SRC})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(pm_fourier polygon_matcher_generate_messages_cpp)
+# add_dependencies(place_matcher_fourier polygon_matcher_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(pm_fourier
+target_link_libraries(place_matcher_fourier
   ${catkin_LIBRARIES}
   ${gsl_LIBRARIES}
   )
@@ -145,7 +145,7 @@ target_link_libraries(pm_fourier
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS pm_fourier
+install(TARGETS place_matcher_fourier
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -170,7 +170,7 @@ install(TARGETS pm_fourier
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_pm_fourier.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_place_matcher_fourier.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

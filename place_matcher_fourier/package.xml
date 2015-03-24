@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>pm_fourier</name>
+  <name>place_matcher_fourier</name>
   <version>0.1.1</version>
   <description>Provides a place matcher based on FFT</description>
 
