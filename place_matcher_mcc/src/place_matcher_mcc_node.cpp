@@ -18,15 +18,15 @@
 
 #include <ros/ros.h>
 
-#include <polygon_matcher/GetCapability.h>
+#include <place_matcher_msgs/GetCapability.h>
 
 #include <place_matcher_mcc/dissimilarity_getter.h>
 
-bool callback_getCapability(polygon_matcher::GetCapabilityRequest& req, polygon_matcher::GetCapabilityResponse& res)
+bool callback_getCapability(place_matcher_msgs::GetCapabilityRequest& req, place_matcher_msgs::GetCapabilityResponse& res)
 {
-  res.scale_invariance = polygon_matcher::GetCapabilityResponse::TRUE;
-  res.translation_invariance = polygon_matcher::GetCapabilityResponse::TRUE;
-  res.rotation_invariance = polygon_matcher::GetCapabilityResponse::OPTIONAL;
+  res.scale_invariance = place_matcher_msgs::GetCapabilityResponse::TRUE;
+  res.translation_invariance = place_matcher_msgs::GetCapabilityResponse::TRUE;
+  res.rotation_invariance = place_matcher_msgs::GetCapabilityResponse::OPTIONAL;
   res.provides_dissimilarity = true;
   res.provides_pose = false;
   return true;

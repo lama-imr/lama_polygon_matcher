@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(polygon_matcher)
+project(place_matcher_msgs)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -83,7 +83,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   #  INCLUDE_DIRS include
-  #  LIBRARIES polygon_matcher
+  #  LIBRARIES place_matcher_msgs
 
   CATKIN_DEPENDS
   geometry_msgs
@@ -107,8 +107,8 @@ include_directories(
   )
 
 ## Declare a cpp library
-# add_library(polygon_matcher
-#   src/${PROJECT_NAME}/polygon_matcher.cpp
+# add_library(place_matcher_msgs
+#   src/${PROJECT_NAME}/place_matcher_msgs.cpp
 # )
 
 ## Declare a cpp executable
@@ -116,7 +116,7 @@ add_executable(simple_dissimilarity_server src/simple_dissimilarity_server_node.
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(simple_dissimilarity_server polygon_matcher_generate_messages_cpp)
+add_dependencies(simple_dissimilarity_server place_matcher_msgs_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(simple_dissimilarity_server
@@ -163,7 +163,7 @@ install(TARGETS simple_dissimilarity_server
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_polygon_matcher.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_place_matcher_msgs.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

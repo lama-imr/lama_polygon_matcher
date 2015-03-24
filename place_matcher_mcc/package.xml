@@ -30,13 +30,13 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>lama_common</build_depend>
-  <build_depend>polygon_matcher</build_depend>
+  <build_depend>place_matcher_msgs</build_depend>
   
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>lama_common</run_depend>
-  <run_depend>polygon_matcher</run_depend>
+  <run_depend>place_matcher_msgs</run_depend>
 
 
   <export>

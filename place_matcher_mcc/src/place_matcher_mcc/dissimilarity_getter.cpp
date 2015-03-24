@@ -102,7 +102,7 @@ DissimilarityGetter::DissimilarityGetter() :
 {
 }
 
-bool DissimilarityGetter::getDissimilarity(polygon_matcher::PolygonDissimilarityRequest& req, polygon_matcher::PolygonDissimilarityResponse& res)
+bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilarityRequest& req, place_matcher_msgs::PolygonDissimilarityResponse& res)
 {
 
   ROS_DEBUG("Request: size_1 = %zu, size_2 = %zu", req.polygon1.points.size(), req.polygon2.points.size());

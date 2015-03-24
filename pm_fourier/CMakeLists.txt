@@ -7,7 +7,7 @@ project(pm_fourier)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   lama_common
-  polygon_matcher
+  place_matcher_msgs
   roscpp
   std_msgs
 )
@@ -90,7 +90,7 @@ catkin_package(
   CATKIN_DEPENDS
   geometry_msgs
   lama_common
-  polygon_matcher
+  place_matcher_msgs
   roscpp
   std_msgs
 

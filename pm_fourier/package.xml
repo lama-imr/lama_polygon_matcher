@@ -2,7 +2,7 @@
 <package>
   <name>pm_fourier</name>
   <version>0.1.1</version>
-  <description>The pm_fourier package</description>
+  <description>Provides a place matcher based on FFT</description>
 
   <maintainer email="gael.ecorchard@ciirc.cvut.cz">Gaël Ecorchard</maintainer>
 
@@ -25,14 +25,14 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>lama_common</build_depend>
   <build_depend>libgsl</build_depend>
-  <build_depend>polygon_matcher</build_depend>
+  <build_depend>place_matcher_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
 
   <run_depend>geometry_msgs</run_depend>
   <run_depend>libgsl</run_depend>
   <run_depend>lama_common</run_depend>
-  <run_depend>polygon_matcher</run_depend>
+  <run_depend>place_matcher_msgs</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
 

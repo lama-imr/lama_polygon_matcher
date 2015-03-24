@@ -1,9 +1,9 @@
 #include <ros/ros.h>
 
-#include <polygon_matcher/PolygonDissimilarity.h>
+#include <place_matcher_msgs/PolygonDissimilarity.h>
 
-bool dissimilarity(polygon_matcher::PolygonDissimilarity::Request  &req,
-    polygon_matcher::PolygonDissimilarity::Response &res)
+bool dissimilarity(place_matcher_msgs::PolygonDissimilarity::Request  &req,
+    place_matcher_msgs::PolygonDissimilarity::Response &res)
 {
   float diff = 0;
   ros::Time start = ros::Time::now();

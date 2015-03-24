@@ -5,8 +5,8 @@ FourierDistance::FourierDistance(ros::NodeHandle &node) :
 {
 }
 
-bool FourierDistance::dissimilarity(polygon_matcher::PolygonDissimilarity::Request& req,
-    polygon_matcher::PolygonDissimilarity::Response& res)
+bool FourierDistance::dissimilarity(place_matcher_msgs::PolygonDissimilarity::Request& req,
+    place_matcher_msgs::PolygonDissimilarity::Response& res)
 {
   ros::Time start = ros::Time::now();
 

@@ -30,10 +30,7 @@
 #include <std_msgs/String.h>
 #include <lama_common/point.h>
 #include <lama_common/polygon.h>
-#include <polygon_matcher/GetCapability.h>
-#include <polygon_matcher/PolygonDissimilarity.h>
-
-#include <polygon_matcher/PolygonDissimilarity.h>
+#include <place_matcher_msgs/PolygonDissimilarity.h>
 
 namespace place_matcher_mcc
 {
@@ -47,7 +44,7 @@ class DissimilarityGetter
 
     DissimilarityGetter();
 
-    bool getDissimilarity(polygon_matcher::PolygonDissimilarityRequest& req, polygon_matcher::PolygonDissimilarityResponse& res);
+    bool getDissimilarity(place_matcher_msgs::PolygonDissimilarityRequest& req, place_matcher_msgs::PolygonDissimilarityResponse& res);
 
     // Number of scales to compute, i.e. max. sigma for the Gaussian filtering.
     unsigned int scale_count;

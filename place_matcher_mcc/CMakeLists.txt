@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   lama_common
-  polygon_matcher
+  place_matcher_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -84,7 +84,7 @@ find_package(Boost REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES place_matcher_mcc
-#  CATKIN_DEPENDS geometry_msgs lama_common polygon_matcher roscpp std_msgs
+#  CATKIN_DEPENDS geometry_msgs lama_common place_matcher_msgs roscpp std_msgs
 #  DEPENDS system_lib
 )
 
