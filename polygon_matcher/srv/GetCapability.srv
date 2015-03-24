@@ -1,0 +1,12 @@
+std_msgs/Empty empty
+---
+int64 FALSE = 0
+int64 TRUE = 1
+int64 OPTIONAL = 2
+int64 IRRELEVANT = -1
+
+int64 scale_invariance
+int64 translation_invariance
+int64 rotation_invariance
+bool provides_dissimilarity
+bool provides_pose
