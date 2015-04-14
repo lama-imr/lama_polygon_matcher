@@ -102,6 +102,39 @@ DissimilarityGetter::DissimilarityGetter() :
 {
 }
 
+double DissimilarityGetter::getDissimilarity(const geometry_msgs::Polygon& polygon1, const geometry_msgs::Polygon& polygon2)
+{
+  geometry_msgs::Polygon polygon1res;
+  geometry_msgs::Polygon polygon2res; 
+  double delta;
+  polygon1res.points = lama_common::resamplePolygon(polygon1.points, sample_count, delta);
+  polygon2res.points = lama_common::resamplePolygon(polygon2.points, sample_count, delta);
+  // Create multi-scale representation (increasing sigma).
+  polygon_list polygon1evo;
+  polygon_list polygon2evo;
+  evolve(polygon1res, polygon1evo, scale_count);
+  evolve(polygon2res, polygon2evo, scale_count);
+
+  matrix mcc1(sample_count, scale_count);
+  matrix mcc2(sample_count, scale_count);
+
+  // TODO: discuss with Karel the interest of the complexity normalization.
+  const double C1 = compute_convexity(polygon1evo, mcc1);
+  const double C2 = compute_convexity(polygon2evo, mcc2);
+  ROS_DEBUG("Complexity normalization of polygon 1 = %f", C1);
+  ROS_DEBUG("Complexity normalization of polygon 2 = %f", C2);
+
+  matrix comp = compare(mcc1, mcc2);
+
+  std::vector<double> result;
+  result.reserve(comp.size2());
+  for (size_t i = 0; i < comp.size2(); i++)
+  {
+    result.push_back(minDistance(comp, i));
+  }
+  return (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (sample_count));
+}
+
 bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilarityRequest& req, place_matcher_msgs::PolygonDissimilarityResponse& res)
 {
 

@@ -9,6 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   lama_common
+  lama_interfaces
+  lama_jockeys
   place_matcher_msgs
 )
 
@@ -82,9 +84,9 @@ find_package(Boost REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES place_matcher_mcc
-#  CATKIN_DEPENDS geometry_msgs lama_common place_matcher_msgs roscpp std_msgs
+  INCLUDE_DIRS include
+  LIBRARIES place_matcher_mcc_dissimilarity_getter
+  CATKIN_DEPENDS geometry_msgs lama_common lama_interfaces lama_jockeys place_matcher_msgs roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -100,19 +102,21 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a cpp library
 add_library(place_matcher_mcc_dissimilarity_getter src/${PROJECT_NAME}/dissimilarity_getter.cpp)
+add_library(place_matcher_mcc_jockey src/${PROJECT_NAME}/jockey.cpp)
 
-## Declare a cpp executable
 add_executable(place_matcher_mcc src/place_matcher_mcc_node.cpp)
+add_executable(place_matcher_jockey_node src/place_matcher_mcc_jockey.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 #add_dependencies(place_matcher_mcc polygon_matcher_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(place_matcher_mcc place_matcher_mcc_dissimilarity_getter ${catkin_LIBRARIES})
 target_link_libraries(place_matcher_mcc_dissimilarity_getter ${catkin_LIBRARIES})
+target_link_libraries(place_matcher_mcc_jockey place_matcher_mcc_dissimilarity_getter ${catkin_LIBRARIES})
+target_link_libraries(place_matcher_mcc place_matcher_mcc_dissimilarity_getter ${catkin_LIBRARIES})
+target_link_libraries(place_matcher_jockey_node place_matcher_mcc_jockey ${catkin_LIBRARIES})
 
 #############
 ## Install ##

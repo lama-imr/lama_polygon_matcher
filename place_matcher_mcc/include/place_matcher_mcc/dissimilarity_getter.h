@@ -44,6 +44,7 @@ class DissimilarityGetter
 
     DissimilarityGetter();
 
+    double getDissimilarity(const geometry_msgs::Polygon& polygon1, const geometry_msgs::Polygon& polygon2);
     bool getDissimilarity(place_matcher_msgs::PolygonDissimilarityRequest& req, place_matcher_msgs::PolygonDissimilarityResponse& res);
 
     // Number of scales to compute, i.e. max. sigma for the Gaussian filtering.
