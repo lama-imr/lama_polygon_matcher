@@ -1,5 +1,11 @@
 geometry_msgs/Polygon polygon1
 geometry_msgs/Polygon polygon2
+
+# If the dissimilarity result is not needed, set to true.
+bool skip_dissimilarity
+
+# If the pose result is not needed, set to true.
+bool skip_pose
 ---
 float64 raw_dissimilarity
 
