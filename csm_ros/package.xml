@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>csm_ros</name>
+  <version>0.0.0</version>
+  <description>
+      Catkin package for the (C)sm library, an incremental laser scan matcher,
+      using Andrea Censi's Canonical Scan Matcher implementation.
+      Package downloads and installs Canonical Scan Matcher.
+      More about CSM: "http://purl.org/censi/2007/csm".
+ </description>
+
+  <maintainer email="gael.ecorchard@ciirc.cvut.cz">Gaël Ecorchard</maintainer>
+
+
+  <license>LGPLv3</license>
+
+
+  <!-- Url tags are optional, but mutiple are allowed, one per tag -->
+  <!-- Optional attribute type can be: website, bugtracker, or repository -->
+  <!-- Example: -->
+  <!-- <url type="website">http://wiki.ros.org/csm_ros</url> -->
+
+
+  <author email="gael.ecorchard@ciirc.cvut.cz">Gaël Ecorchard</author>
+  <author>Ivan Dryanovski</author>
+  <author>William Morris</author>
+  <author>Andrea Censi</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>libgsl</depend>
+
+
+  <export>
+  </export>
+</package>

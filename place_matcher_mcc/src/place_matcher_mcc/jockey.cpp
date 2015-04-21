@@ -52,7 +52,7 @@ void Jockey::onGetDissimilarity()
   place_profile_getter = nh_.serviceClient<lama_msgs::GetPlaceProfile>(place_profile_getter_service_name_);
   while (ros::ok() && !place_profile_getter.waitForExistence(ros::Duration(5)))
   {
-    ROS_WARN("Waiting for service /interface_factory");
+    ROS_WARN_STREAM("Waiting for service " << place_profile_getter.getService());
   }
 
   getData();

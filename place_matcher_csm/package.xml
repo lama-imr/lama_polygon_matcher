@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>place_matcher_csm</name>
+  <version>0.0.0</version>
+  <description>Provides the tranformation between two places
+  with the (Canonical) Scan Matcher from Andrea Censi</description>
+
+  <maintainer email="gael.ecorchard@ciirc.cvut.cz">Gaël Ecorchard</maintainer>
+
+  <license>BSD</license>
+
+  <!-- <url type="website">http://wiki.ros.org/place_matcher_csm</url> -->
+  <url type="repository">https://github.com/lama-imr/lama_polygon_matcher.git</url>
+  <url type="bugtracker">https://github.com/lama-imr/lama_polygon_matcher/issues</url>
+
+  <author email="gael.ecorchard@ciirc.cvut.cz">Gaël Ecorchard</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>csm_ros</depend>
+  <depend>place_matcher_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>tf</depend>
+
+
+  <export>
+  </export>
+</package>
