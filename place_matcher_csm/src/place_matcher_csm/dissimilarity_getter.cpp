@@ -38,8 +38,16 @@ void polygonToLDP(const geometry_msgs::Polygon& poly, LDP& ldp)
     ldp->cluster[i]  = -1;
   }
 
-  ldp->min_theta = ldp->theta[0];
-  ldp->max_theta = ldp->theta[n-1];
+  if (n > 0)
+  {
+    ldp->min_theta = ldp->theta[0];
+    ldp->max_theta = ldp->theta[n-1];
+    if (ldp->min_theta > ldp->max_theta)
+    {
+      ldp->min_theta = -M_PI;
+      ldp->max_theta = M_PI;
+    }
+  }
 
   ldp->odometry[0] = 0.0;
   ldp->odometry[1] = 0.0;
