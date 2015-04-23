@@ -12,7 +12,6 @@ void polygonToLDP(const geometry_msgs::Polygon& poly, LDP& ldp)
   const size_t n = poly.points.size();
 
   ldp = ld_alloc_new(n);
-  ldp->nrays = n;
 
   for (size_t i = 0; i < n; ++i)
   {
@@ -29,9 +28,13 @@ void polygonToLDP(const geometry_msgs::Polygon& poly, LDP& ldp)
 
       ldp->valid[i] = 1;
       ldp->readings[i] = r;
+      ldp->points[i].p[0] = poly.points[i].x;
+      ldp->points[i].p[1] = poly.points[i].y;
+      ldp->points[i].rho = r;
     }
 
     ldp->theta[i] = std::atan2(poly.points[i].y, poly.points[i].x);
+    ldp->points[i].phi = ldp->theta[i];
     ldp->cluster[i]  = -1;
   }
 
@@ -198,6 +201,8 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
   if (!csm_output.valid)
   {
     ROS_INFO("Canonical scan match failed");
+    ROS_INFO("ldp1->min_theta, ldp1->max_theta = %f, %f", ldp1->min_theta, ldp1->max_theta); // DEBUG
+    ROS_INFO("ldp2->min_theta, ldp2->max_theta = %f, %f", ldp2->min_theta, ldp2->max_theta); // DEBUG
     res.raw_dissimilarity = std::numeric_limits<double>::max();
     res.pose.orientation.w = 1.0;
     res.processing_time = ros::Duration((ros::WallTime::now() - start).toSec());
