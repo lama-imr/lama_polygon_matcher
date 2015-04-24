@@ -9,10 +9,15 @@
 #include <geometry_msgs/Polygon.h>
 
 #include <place_matcher_msgs/PolygonDissimilarity.h>
+extern "C"
+{
 #include <csm/csm_all.h>
+#include <csm/icp/icp.h>
+#include <egsl/egsl_macros.h>
 // csm creates max macro that causes issues with std::numeric_limits<>::max.
 #undef min
 #undef max
+}
 
 namespace place_matcher_csm
 {
