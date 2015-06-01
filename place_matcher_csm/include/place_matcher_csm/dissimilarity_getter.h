@@ -1,7 +1,8 @@
+#pragma once
 #ifndef PLACE_MATCHER_CSM_DISSIMILARITY_GETTER_H
 #define PLACE_MATCHER_CSM_DISSIMILARITY_GETTER_H
 
-#include <cmath>
+#include <cmath> // for std::cos, sin.
 #include <limits>
 
 #include <ros/ros.h>
@@ -26,11 +27,14 @@ class DissimilarityGetter
 {
   public :
 
-    DissimilarityGetter(ros::NodeHandle& nh_private_);
+    DissimilarityGetter(ros::NodeHandle& nh_private);
 
     bool getDissimilarity(place_matcher_msgs::PolygonDissimilarityRequest& req, place_matcher_msgs::PolygonDissimilarityResponse& res);
 
   private :
+
+    // ROS parameters (on top of those for the csm algorithm).
+    int optimization_count_;
 
     // Internals.
     void initParams();
