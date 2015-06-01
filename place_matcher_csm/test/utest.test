@@ -1,0 +1,10 @@
+<launch>
+  <node name="place_matcher_csm" pkg="place_matcher_csm" type="place_matcher_csm" >
+    <param name="optimization_count" value="72" />
+  </node>
+
+  <test test-name="utest" pkg="place_matcher_csm" type="place_matcher_csm-test" time-limit="10.0" >
+  </test>
+</launch>
+
+
