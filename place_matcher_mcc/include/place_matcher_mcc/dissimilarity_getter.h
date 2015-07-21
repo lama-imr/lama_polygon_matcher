@@ -26,11 +26,11 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 
+#include <lama_common/point.h>
+#include <lama_common/polygon_utils.h> // for resamplePolygon().
+#include <place_matcher_msgs/PolygonDissimilarity.h>
 #include <ros/ros.h>
 #include <std_msgs/String.h>
-#include <lama_common/point.h>
-#include <lama_common/polygon.h>
-#include <place_matcher_msgs/PolygonDissimilarity.h>
 
 namespace place_matcher_mcc
 {
@@ -60,9 +60,6 @@ class DissimilarityGetter
 
     double compute_convexity(const polygon_list& polygons, matrix& m);
     matrix compare(const matrix& a, const matrix& b);
-
-    ros::ServiceServer get_capability_server_;
-    ros::ServiceServer get_dissimilarity_server_;
 };
 
 } /* namespace place_matcher_mcc */
