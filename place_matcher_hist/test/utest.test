@@ -1,0 +1,8 @@
+<launch>
+  <node name="place_matcher_hist" pkg="place_matcher_hist" type="place_matcher_hist_server" />
+
+  <test test-name="utest" pkg="place_matcher_hist" type="place_matcher_hist-test" time-limit="10.0" />
+</launch>
+
+
+
