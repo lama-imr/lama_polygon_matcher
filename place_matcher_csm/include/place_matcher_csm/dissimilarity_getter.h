@@ -34,7 +34,10 @@ class DissimilarityGetter
   private :
 
     // ROS parameters (on top of those for the csm algorithm).
-    int optimization_count_;
+    int optimization_count_; //!< Number of angles for which to compute the
+                             //!< scan matching. The second polygon is rotated
+                             //!< with different angles before matching to
+                             //!< workaround local optima.
 
     // Internals.
     void initParams();
