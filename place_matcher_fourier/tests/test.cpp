@@ -9,7 +9,7 @@
 #include <sstream>
 
 #include <lama_common/point.h>
-#include <lama_common/polygon.h>
+#include <lama_common/polygon_utils.h> // for resamplePolygon()
 #include <pm_fourier/fourier.h>
 #include "utils.h"
 

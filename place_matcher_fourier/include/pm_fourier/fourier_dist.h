@@ -6,7 +6,7 @@
 #include <geometry_msgs/Point32.h>
 
 #include <lama_common/point.h>
-#include <lama_common/polygon.h>
+#include <lama_common/polygon_utils.h> // for resamplePolygon()
 #include <place_matcher_msgs/PolygonDissimilarity.h>
 
 #include <pm_fourier/fourier.h>

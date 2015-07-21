@@ -53,7 +53,8 @@ double getSimpleDissimilarityFft(const vector<double> &fft1, const vector<double
 
 /** convert a polygon to a 'range' similar to LaserScan.ranges
  *
- * Convert the points to polar coordinates and just ignore the phase part.
+ * First center the polygon, then convert the points to polar coordinates and
+ * just ignore the phase part.
 */
 static vector<double> convertPolygonToRange(const vector<Point2> &polygon)
 {
