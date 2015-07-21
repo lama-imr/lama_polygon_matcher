@@ -139,7 +139,7 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
 {
 
   ROS_DEBUG("Request: size_1 = %zu, size_2 = %zu", req.polygon1.points.size(), req.polygon2.points.size());
-  ros::Time start = ros::Time::now();
+  ros::WallTime start = ros::WallTime::now();
 
   geometry_msgs::Polygon polygon1res;
   geometry_msgs::Polygon polygon2res; 
@@ -151,7 +151,7 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
   polygon_list polygon2evo;
   evolve(polygon1res, polygon1evo, scale_count);
   evolve(polygon2res, polygon2evo, scale_count);
-  res.processing_time = ros::Time::now() - start;
+  res.processing_time = ros::Duration((ros::WallTime::now() - start).toSec());
   ROS_DEBUG("Evolved polygons created after %.4f s", res.processing_time.toSec());
 
   matrix mcc1(sample_count, scale_count);
@@ -163,12 +163,12 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
   ROS_DEBUG("Complexity normalization of polygon 1 = %f", C1);
   ROS_DEBUG("Complexity normalization of polygon 2 = %f", C2);
 
-  res.processing_time = ros::Time::now() - start;
+  res.processing_time = ros::Duration((ros::WallTime::now() - start).toSec());
   ROS_DEBUG("Multi-scale convexity-concavity computed after %.4f s", res.processing_time.toSec());
 
   matrix comp = compare(mcc1, mcc2);
 
-  res.processing_time = ros::Time::now() - start;
+  res.processing_time = ros::Duration((ros::WallTime::now() - start).toSec());
   ROS_DEBUG("Comparison created after %.4f s", res.processing_time.toSec());
 
   std::vector<double> result;
@@ -179,7 +179,7 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
   }
   res.raw_dissimilarity = (*std::min_element(result.begin(), result.end())) * 2.0 / ((C1 + C2) * (sample_count));
 
-  res.processing_time = ros::Time::now() - start;
+  res.processing_time = ros::Duration((ros::WallTime::now() - start).toSec());
   ROS_DEBUG("Sending back response: %f  (in %.4f s)", res.raw_dissimilarity, res.processing_time.toSec());
 
   return true;
