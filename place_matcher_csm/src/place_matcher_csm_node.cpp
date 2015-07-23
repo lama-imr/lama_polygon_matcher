@@ -6,9 +6,9 @@
 
 bool callback_getCapability(place_matcher_msgs::GetCapabilityRequest& req, place_matcher_msgs::GetCapabilityResponse& res)
 {
-  res.scale_invariance = place_matcher_msgs::GetCapabilityResponse::IRRELEVANT;
-  res.translation_invariance = place_matcher_msgs::GetCapabilityResponse::IRRELEVANT;
-  res.rotation_invariance = place_matcher_msgs::GetCapabilityResponse::IRRELEVANT;
+  res.scale_invariance = place_matcher_msgs::GetCapabilityResponse::FALSE;
+  res.translation_invariance = place_matcher_msgs::GetCapabilityResponse::TRUE;
+  res.rotation_invariance = place_matcher_msgs::GetCapabilityResponse::TRUE;
   res.provides_dissimilarity = true;
   res.provides_pose = true;
   return true;
@@ -17,7 +17,7 @@ bool callback_getCapability(place_matcher_msgs::GetCapabilityRequest& req, place
 int main(int argc, char *argv[])
 {
   int max_thread;
-  ros::init(argc, argv, "polygon_dissimilarity_server_mcc");
+  ros::init(argc, argv, "polygon_dissimilarity_server_csm");
   ros::NodeHandle nh("~");
 
   nh.param<int>("max_thread", max_thread, 1);

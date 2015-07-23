@@ -67,11 +67,11 @@ void DissimilarityGetter::initParams()
   // Defaults taken from the laser_scan_matcher package.
 
   // Maximum angular displacement between scans
-  csm_input_.max_angular_correction_deg = 45.0;
+  csm_input_.max_angular_correction_deg = 180.0;
   nh_private_.getParam("max_angular_correction_deg", csm_input_.max_angular_correction_deg);
 
   // Maximum translation between scans (m)
-  csm_input_.max_linear_correction = 0.50;
+  csm_input_.max_linear_correction = 50.0;
   nh_private_.getParam("max_linear_correction", csm_input_.max_linear_correction);
 
   // Maximum ICP cycle iterations
@@ -87,7 +87,7 @@ void DissimilarityGetter::initParams()
   nh_private_.getParam("epsilon_theta", csm_input_.epsilon_theta);
 
   // Maximum distance for a correspondence to be valid
-  csm_input_.max_correspondence_dist = 0.3;
+  csm_input_.max_correspondence_dist = 0.5;
   nh_private_.getParam("max_correspondence_dist", csm_input_.max_correspondence_dist);
 
   // Noise in the scan (m)
@@ -324,7 +324,7 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
   LDP ldp2;
   polygonToLDP(req.polygon2, ldp2);
   csm_input_.laser_sens = ldp2;
-
+ 
   // Run ICP several times, each with a different angle, to workaround local
   // optimum.
   double best_error = std::numeric_limits<double>::max();
@@ -342,7 +342,7 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
     sm_icp_xy(&csm_input_, &csm_output);
     if (!csm_output.valid)
     {
-      ROS_INFO("Canonical scan match failed with initial angle %.3f rad", init_yaw);
+      ROS_ERROR("Canonical scan match failed with initial angle %.3f rad", init_yaw);
       continue;
     }
     if (csm_output.error < best_error)

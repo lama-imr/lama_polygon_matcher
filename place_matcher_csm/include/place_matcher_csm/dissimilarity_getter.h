@@ -1,3 +1,14 @@
+/*
+ * Provides a polygon dissimilarity capability thanks to the Canonical Scan
+ * Matcher library (http://censi.mit.edu/software/csm/).
+ *
+ * provides dissimilarity: TRUE
+ * provides pose: TRUE
+ * scale invariance: FALSE
+ * translation invariance: TRUE
+ * rotation invariance: TRUE
+ */
+
 #pragma once
 #ifndef PLACE_MATCHER_CSM_DISSIMILARITY_GETTER_H
 #define PLACE_MATCHER_CSM_DISSIMILARITY_GETTER_H
@@ -18,6 +29,9 @@ extern "C"
 // csm creates max macro that causes issues with std::numeric_limits<>::max.
 #undef min
 #undef max
+// csm/sm/lib/json-c/json_object.h defines FALSE and TRUE.
+#undef FALSE
+#undef TRUE
 }
 
 namespace place_matcher_csm
