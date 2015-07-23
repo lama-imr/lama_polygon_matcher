@@ -200,10 +200,17 @@ int compute_next_estimate(struct sm_params*params,
 			double diff[2];
 			diff[0] = laser_ref->points[j1].p[0]-laser_ref->points[j2].p[0];
 			diff[1] = laser_ref->points[j1].p[1]-laser_ref->points[j2].p[1];
-			double one_on_norm = 1 / sqrt(diff[0]*diff[0]+diff[1]*diff[1]);
+			const double length_diff = sqrt(diff[0]*diff[0]+diff[1]*diff[1]);
 			double normal[2];
-			normal[0] = +diff[1] * one_on_norm;
-			normal[1] = -diff[0] * one_on_norm;
+			if (length_diff < 1e-10) {
+				normal[0] = 1.0;
+				normal[1] = 0.0;
+			}
+			else {
+				double one_on_norm = 1 / length_diff;
+				normal[0] = +diff[1] * one_on_norm;
+				normal[1] = -diff[0] * one_on_norm;
+			}
 
 			double cos_alpha = normal[0];
 			double sin_alpha = normal[1];
