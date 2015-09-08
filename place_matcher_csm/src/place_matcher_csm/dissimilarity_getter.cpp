@@ -352,8 +352,8 @@ bool DissimilarityGetter::getDissimilarity(place_matcher_msgs::PolygonDissimilar
       best_yaw = csm_output.x[2];
       best_error = csm_output.error;
     }
-    ROS_DEBUG("Canonical scan match return error = %f with initial angle %.3f rad", csm_output.error, init_yaw);
-    ROS_INFO("Canonical scan match return error = %f with initial angle %.3f rad", csm_output.error, init_yaw); // DEBUG
+    ROS_DEBUG("Canonical scan match return value = %f with initial angle %.3f rad", csm_output.error, init_yaw);
+    ROS_INFO("Canonical scan match return value = %f with initial angle %.3f deg", csm_output.error, init_yaw * 180 / M_PI); // DEBUG
   }
 
   if (best_error == std::numeric_limits<double>::max())
