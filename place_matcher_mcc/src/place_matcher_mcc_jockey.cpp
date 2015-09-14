@@ -82,7 +82,7 @@ int main(int argc, char **argv)
   }
 
   // With rotation_invariance = true, no cyclic optimization will be done in compare.
-  bool rotation_invariance;
+  bool rotation_invariance = jockey.getRotationInvariance();
   nh.getParam("rotation_invariance", rotation_invariance);
   jockey.setRotationInvariance(rotation_invariance);
 

@@ -15,7 +15,7 @@
 
 #include <place_matcher_csm/dissimilarity_getter.h>
 
-#define FILE_OUTPUT 1
+#define FILE_OUTPUT 0
 
 ros::NodeHandlePtr g_nh_ptr;
 
@@ -146,10 +146,10 @@ geometry_msgs::Polygon getTestPolygon()
 TEST(TestSuite, testGetDissimilarity)
 {
   const geometry_msgs::Polygon poly_ref = getTestPolygon();
-  const double dtheta = 0.4;
+  double dtheta = 0.4;
   geometry_msgs::Pose transform;
-  transform.position.x = 0.0;
-  transform.position.y = 0.0;
+  transform.position.x = 0.4;
+  transform.position.y = 0.2;
   transform.orientation = tf::createQuaternionMsgFromYaw(dtheta);
   geometry_msgs::Polygon poly_sens = poly_ref;
   transformPolygon(transform, poly_sens);
@@ -174,6 +174,31 @@ TEST(TestSuite, testGetDissimilarity)
   EXPECT_NEAR(res.pose.position.x, transform.position.x, 1e-3);
   EXPECT_NEAR(res.pose.position.y, transform.position.y, 1e-3);
   EXPECT_NEAR(tf::getYaw(res.pose.orientation), dtheta, 1e-4);
+
+  const double dissimilarity_0 = res.raw_dissimilarity;
+
+  dtheta = 1.4;
+  transform.position.x = -0.4;
+  transform.position.y = -0.2;
+  transform.orientation = tf::createQuaternionMsgFromYaw(dtheta);
+  poly_sens = poly_ref;
+  transformPolygon(transform, poly_sens);
+
+#if FILE_OUTPUT
+  saveToFile("/tmp/poly_ref_2.csv", poly_ref);
+  saveToFile("/tmp/poly_sens_2.csv", poly_sens);
+#endif
+
+  req.polygon1 = poly_ref;
+  req.polygon2 = poly_sens;
+  
+  ASSERT_TRUE(client.call(req, res));
+  EXPECT_NEAR(res.pose.position.x, transform.position.x, 1e-3);
+  EXPECT_NEAR(res.pose.position.y, transform.position.y, 1e-3);
+  EXPECT_NEAR(tf::getYaw(res.pose.orientation), dtheta, 1e-4);
+
+  // Test that the dissimilarity is rotation invariant.
+  EXPECT_NEAR(res.raw_dissimilarity, dissimilarity_0, 1e-2);
 }
 
 int main(int argc, char *argv[])
